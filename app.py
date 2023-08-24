@@ -15,3 +15,15 @@ def show_homepage():
     return render_template("survey_start.html",
                            title=survey.title,
                            instructions=survey.instructions)
+
+@app.post("/begin")
+def redirect_to_handle_questions():
+    '''directs user to survey questions'''
+
+    return redirect("/questions/<int:num_of_question>")
+
+@app.get("/questions/<int:num_of_question>")
+def handle_questions(num_of_question):
+
+    return render_template("question.html",
+                           question = survey.questions[num_of_question])
