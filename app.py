@@ -13,6 +13,7 @@ responses = []
 @app.get("/")
 def show_homepage():
     """Show the home page survey start"""
+    responses.clear()
     return render_template("survey_start.html",
                            title=survey.title,
                            instructions=survey.instructions)
@@ -26,7 +27,7 @@ def redirect_to_handle_questions():
 
 @app.get("/questions/<int:num_of_question>")
 def handle_questions(num_of_question):
-
+    '''Shows current question'''
     return render_template("question.html",
                            question = survey.questions[num_of_question])
 
@@ -50,9 +51,7 @@ def handle_answer():
 def show_completion_page():
     """Show thank you message and survey answers"""
 
-    data = {}
     prompts = [q.prompt for q in survey.questions]
-    for prompt in prompts:
-        data[prompt]
+    data = {prompts[i]: responses[i] for i in range(len(responses))}
 
-    return render_template("completion.html")
+    return render_template("completion.html", responses = data)

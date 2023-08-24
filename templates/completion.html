@@ -5,11 +5,11 @@
   <h1>Thanks for completing this survey!</h1>
 
   <ul>
-    {% for response in repsonses %}
+    {% for (prompt, answer) in responses.items() %}
     <li>
-      <b>{{ question }}</b> {{ answer }}
+        <b>{{ prompt }}</b> {{ answer }}
     </li>
-
+    {% endfor %}
   </ul>
 
 {% endblock %}
