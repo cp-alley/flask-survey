@@ -5,9 +5,9 @@
   <h1>Thanks for completing this survey!</h1>
 
   <ul>
-    {% for (prompt, answer) in responses.items() %}
+    {% for response in responses %}
     <li>
-        <b>{{ prompt }}</b> {{ answer }}
+        <b>{{ prompts[loop.index0] }}</b> {{ responses[loop.index0] }}
     </li>
     {% endfor %}
   </ul>

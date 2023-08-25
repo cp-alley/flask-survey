@@ -13,7 +13,7 @@ debug = DebugToolbarExtension(app)
 def show_homepage():
     """Show the home page survey start"""
     session["responses"] = []
-    session["questions_answered"] = {}
+    session["questions_answered"] = []
     return render_template("survey_start.html",
                            title=survey.title,
                            instructions=survey.instructions)
@@ -29,15 +29,18 @@ def handle_questions(num_of_question):
     '''Shows current question'''
     questions_answered = session["questions_answered"]
 
-    if num_of_question not in questions_answered:
+    if num_of_question in questions_answered:
         print("num_of_question=", num_of_question, "current_quest", questions_answered)
         return redirect(f"/questions/{len(questions_answered)}")
 
-    questions_answered.append(num_of_question)
-    session["questions_answered"] = questions_answered
+    if num_of_question not in questions_answered:
 
-    return render_template("question.html",
-                           question = survey.questions[num_of_question]) #pull this out into a variable
+        if num_of_question != len(questions_answered):
+            return redirect(f"/questions/{len(questions_answered)}")
+
+    question = survey.questions[num_of_question]
+
+    return render_template("question.html", question = question)
 
 @app.post("/answer")
 def handle_answer():
@@ -53,6 +56,10 @@ def handle_answer():
 
     current_question = len(responses)
 
+    questions_answered = session["questions_answered"]
+    questions_answered.append(current_question - 1)
+    session["questions_answered"] = questions_answered
+
     if current_question < len(survey.questions):
         return redirect(f"/questions/{current_question}")
 
@@ -64,6 +71,5 @@ def show_completion_page():
 
     responses = session["responses"]
     prompts = [q.prompt for q in survey.questions]
-    data = {prompts[i]: responses[i] for i in range(len(responses))}
 
-    return render_template("completion.html", responses = data)
+    return render_template("completion.html", responses = responses, prompts = prompts)
